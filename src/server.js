@@ -41,10 +41,26 @@ app.get('/', (req, res) => {
 //   422 -> lbs negative or non-finite
 //   Every successful conversion increments the Redis key `conversions` by one.
 //   Invalid requests must NOT increment it.
+///////////////////////////////////////////////////////////////////////////////////
+// "/convert" draft:) 
+// Some Notes:) Result = 200; A valid number value (finite, positive number)
+//              Result = 422; An invalid number value (inifinite, negative, etc.)
+//              Result = 400; Not a numeric value (letters, symbols, etc.)
+//
+//              200 should be the only valid/non-error number and the resulting
+//              number needs to be rounded to the nearest 3rd decimal place.
+
+
+//////////////////////////////////////////////////////////////////////////////////
+
+
 
 // TODO (Project 1): implement GET /stats
 //   200 -> { conversions: <count read from Redis> }
 //   503 -> optional, when the Redis-backed state cannot be read
+
+
+
 
 // TODO (Project 1): implement GET /health
 //   200 -> { status: 'ok' }
