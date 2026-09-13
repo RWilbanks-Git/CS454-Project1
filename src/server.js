@@ -52,7 +52,14 @@ app.get('/', (req, res) => {
 //   is an application-local liveness check: it should NOT fail just because
 //   Redis is unreachable -- that failure surfaces on /stats instead. Explain the
 //   distinction in your README.
-
+////////////////////////////////////////////////////////////////////////////
+// "/health" draft:)  
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'In good health'
+  });
+});
+////////////////////////////////////////////////////////////////////////////
 // Error bodies match the ErrorResponse schema in convert-api.openapi.yaml:
 // a single `error` string and nothing else. The requested path is already in
 // the log line above, so it does not need to go in the response.
