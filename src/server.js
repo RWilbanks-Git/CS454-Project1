@@ -56,7 +56,7 @@ app.get('/', (req, res) => {
 // "/health" draft:)  
 app.get('/health', (req, res) => {
   res.json({
-    status: 'In good health'
+    status: 'ok'
   });
 });
 ////////////////////////////////////////////////////////////////////////////
