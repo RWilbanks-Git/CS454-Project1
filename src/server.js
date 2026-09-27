@@ -48,28 +48,34 @@ app.get('/', (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/convert', (req, res) => {
+  
   res.json({
+    
     if (req.query.lbs === undefined) {
       return res.status(400).json({
         error: 'The input does not seem to be a number. Please enter a positive, finite number.'
       });
     }
+  
     else {
       const lbs = Number(req.query.lbs);
-      
-      if ((lbs < 0) || (!Number.isFinite(lbs))) {
-        return res.status(422).json({
-          error: 'Number entered seems to be negative or infinite. Please enter a different number.'
-        });
-      }
-      else if (Number.isNaN(lbs)) {
+              
+      if (Number.isNaN(lbs)) {
         return res.status(400).json({
           error: 'This does not appear to be a number. Please enter a postive, finite number.'
         });
+        //I guess 0 technically isn't positive, but I can't think of a way to...
+        //   reword w/o making message longer. 
       }
+      
+      else if ((lbs < 0) || (!Number.isFinite(lbs))) {
+        return res.status(422).json({
+          error: 'Number can not negative or infinite. Please enter a different number.'
+        });
+      }
+        
       else {
         kg = Number((lbs * 0.45359237).toFixed(3));
-
         return res.json({
           lbs: lbs,
           kg: kg,
