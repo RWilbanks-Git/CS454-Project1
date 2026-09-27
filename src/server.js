@@ -35,29 +35,45 @@ app.get('/', (req, res) => {
   });
 });
 
+
+
+
 // TODO (Project 1): implement GET /convert?lbs=<number>
 //   200 -> { lbs, kg, formula: 'kg = lbs * 0.45359237' }, kg rounded to 3 decimals
 //   400 -> lbs missing or not a number
 //   422 -> lbs negative or non-finite
 //   Every successful conversion increments the Redis key `conversions` by one.
 //   Invalid requests must NOT increment it.
-///////////////////////////////////////////////////////////////////////////////////
-// "/convert" draft:) 
-// Some Notes:) Result = 200; A valid number value (finite, positive number)
-//              Result = 422; An invalid number value (inifinite, negative, etc.)
-//              Result = 400; Not a numeric value (letters, symbols, etc.)
-//
-//              200 should be the only valid/non-error number and the resulting
-//              number needs to be rounded to the nearest 3rd decimal place.
 
 
-//////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+app.get('/convert', (req, res) => {
+  res.json({
 
+    if (req.query.lbs
+
+  });
+});
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // TODO (Project 1): implement GET /stats
 //   200 -> { conversions: <count read from Redis> }
 //   503 -> optional, when the Redis-backed state cannot be read
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 
@@ -68,14 +84,23 @@ app.get('/', (req, res) => {
 //   is an application-local liveness check: it should NOT fail just because
 //   Redis is unreachable -- that failure surfaces on /stats instead. Explain the
 //   distinction in your README.
-////////////////////////////////////////////////////////////////////////////
-// "/health" draft:)  
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Start of "Health" Draft (Might be changed or possibly cleaned up later):
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok'
   });
 });
-////////////////////////////////////////////////////////////////////////////
+// End of "Health" Draft (Note: Still need to edit the README w/explanation that 
+//  actually makes sense to an outside reader/viewer)
+
+//  Start of /health README part (will remove from here and add to README when done):
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 // Error bodies match the ErrorResponse schema in convert-api.openapi.yaml:
 // a single `error` string and nothing else. The requested path is already in
 // the log line above, so it does not need to go in the response.
