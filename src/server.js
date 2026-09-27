@@ -26,7 +26,17 @@ const redisClient = createClient({
 });
 ///// End of addition to check on/proofread later
 
+redisClient.on('error', (redisError) => {
+  console.error('Redis error:', redisError);
+});
 
+redisClient.connect()
+.then(() => {
+  console.log('Connected to Redis at ${redisHost}:${redisPort}');
+})
+.catch((redisError) => {
+  console.error('Connection failed (Redis): ', redisError);
+});
 
 
 // Basic request logging. Container logs are your primary debugging tool for this
@@ -66,7 +76,7 @@ app.get('/convert', (req, res) => {
     
     if (req.query.lbs === undefined || req.query.lbs === '') {
       return res.status(400).json({
-        error: 'The input does not seem to be a number. Please enter a positive, finite number.'
+        error: 'Input does not seem to be a number. Please enter a positive, finite number.'
       });
     }
   
@@ -74,6 +84,7 @@ app.get('/convert', (req, res) => {
       const lbs = Number(req.query.lbs);
               
       if (Number.isNaN(lbs)) {
+        
         return res.status(400).json({
           error: 'This does not appear to be a number. Please enter a non-negative number.'
         });
@@ -122,17 +133,33 @@ app.get('/convert', (req, res) => {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+app.get('/stats', (req, res) => {
+  // Finally counting and/or reading it
 
+  redisClient.get('conversion')
+  .then((conversionCount) => {
 
+    const conversions = Number(conversionCount || 0);
 
+    res.json({
+      conversions: conversions
+    });
 
+  })
+  .catch((redisError) => {
+    console.error(
+      'Unable to find current count', 
+      redisError
+      );
+
+    res.status(503).json({
+      error: 'Can not read count'
+    });
+  });
+});
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
 
 
 // TODO (Project 1): implement GET /health
@@ -144,6 +171,7 @@ app.get('/convert', (req, res) => {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // Start of "Health" Draft (Might be changed or possibly cleaned up later):
 app.get('/health', (req, res) => {
   res.json({
@@ -156,8 +184,6 @@ app.get('/health', (req, res) => {
 //  Start of /health README part (will remove from here and add to README when done):
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
 
 // Error bodies match the ErrorResponse schema in convert-api.openapi.yaml:
@@ -188,7 +214,7 @@ const shutdown = (signal) => {
   });
     .catch((redisError) => {
     console.error(
-      'Not able to close the connection', 
+      'Not able to close connection', 
       redisError
     };
     process.exit(1);  //Error close
@@ -198,3 +224,7 @@ const shutdown = (signal) => {
 
 process.on('SIGINT', () => shutdown('SIGINT'));
 process.on('SIGTERM', () => shutdown('SIGTERM'));
+
+
+
+
