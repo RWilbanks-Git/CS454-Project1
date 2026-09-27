@@ -1,5 +1,7 @@
 const express = require('express');
 
+const {createClient} = require('redis');    //Proofread/check on later 
+
 const app = express();
 
 // Runtime configuration comes from the environment, never from hard-coded values.
@@ -10,8 +12,22 @@ const serviceName = process.env.SERVICE_NAME || 'cs454-project1';
 
 // TODO (Project 1): read your Redis connection settings from the environment too.
 // The Compose service name is the hostname -- do not hard-code a container IP.
-//   const redisHost = process.env.REDIS_HOST || 'localhost';
-//   const redisPort = Number(process.env.REDIS_PORT || 6379);
+const redisHost = process.env.REDIS_HOST || 'localhost';
+const redisPort = Number(process.env.REDIS_PORT || 6379);
+
+
+
+//////////Just added (need to check up on later to check if working right)
+const redisClient = createClient({
+  socket: {
+    host: redisHost,
+    port: redisPort
+  }
+});
+///// End of addition to check on/proofread later
+
+
+
 
 // Basic request logging. Container logs are your primary debugging tool for this
 // project, so keep writing to stdout/stderr rather than to a file inside the image.
@@ -47,10 +63,8 @@ app.get('/', (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/convert', (req, res) => {
-  
-  res.json({
     
-    if (req.query.lbs === undefined) {
+    if (req.query.lbs === undefined || req.query.lbs === '') {
       return res.status(400).json({
         error: 'The input does not seem to be a number. Please enter a positive, finite number.'
       });
@@ -61,7 +75,7 @@ app.get('/convert', (req, res) => {
               
       if (Number.isNaN(lbs)) {
         return res.status(400).json({
-          error: 'This does not appear to be a number. Please enter a postive, finite number.'
+          error: 'This does not appear to be a number. Please enter a non-negative number.'
         });
         //I guess 0 technically isn't positive, but I can't think of a way to...
         //   reword w/o making message longer. 
@@ -74,14 +88,30 @@ app.get('/convert', (req, res) => {
       }
         
       else {
+        //Actual conversion
         kg = Number((lbs * 0.45359237).toFixed(3));
-        return res.json({
+
+        redisClient.incr('conversions')
+        .then(() => {
+        res.json({
           lbs: lbs,
           kg: kg,
           formula: 'kg = lbs * 0.45359237'
         });
+        })
+        .catch((redisError) => {
+
+          console.error(
+            'Unable to change count:',
+            redisError
+          );
+
+        res.status(503).json({
+          error: 'Unable to record conversion'
+        });
+        });
+      }
     }
-  });
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -148,9 +178,22 @@ const shutdown = (signal) => {
 
   server.close(() => {
     console.log('Server closed.');
+
+    /////////////////////////////////////////////////////////////////
     // TODO (Project 1): close your Redis client here before exiting.
+    redisClient.quit()
+    .then(() => {
+    console.log('Connection has been closed');
     process.exit(0);
   });
+    .catch((redisError) => {
+    console.error(
+      'Not able to close the connection', 
+      redisError
+    };
+    process.exit(1);  //Error close
+  });
+});
 };
 
 process.on('SIGINT', () => shutdown('SIGINT'));
