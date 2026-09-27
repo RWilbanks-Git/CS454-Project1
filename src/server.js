@@ -210,7 +210,7 @@ const shutdown = (signal) => {
     .then(() => {
     console.log('Connection has been closed');
     process.exit(0);
-  });
+  })
     .catch((redisError) => {
     console.error(
       'Not able to close connection', 
