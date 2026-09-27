@@ -49,9 +49,33 @@ app.get('/', (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/convert', (req, res) => {
   res.json({
+    if (req.query.lbs === undefined) {
+      return res.status(400).json({
+        error: 'The input does not seem to be a number. Please enter a positive, finite number.'
+      });
+    }
+    else {
+      const lbs = Number(req.query.lbs);
+      
+      if ((lbs < 0) || (!Number.isFinite(lbs))) {
+        return res.status(422).json({
+          error: 'Number entered seems to be negative or infinite. Please enter a different number.'
+        });
+      }
+      else if (Number.isNaN(lbs)) {
+        return res.status(400).json({
+          error: 'This does not appear to be a number. Please enter a postive, finite number.'
+        });
+      }
+      else {
+        kg = Number((lbs * 0.45359237).toFixed(3));
 
-    if (req.query.lbs
-
+        return res.json({
+          lbs: lbs,
+          kg: kg,
+          formula: 'kg = lbs * 0.45359237'
+        });
+    }
   });
 });
 
@@ -99,6 +123,8 @@ app.get('/health', (req, res) => {
 //  Start of /health README part (will remove from here and add to README when done):
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 // Error bodies match the ErrorResponse schema in convert-api.openapi.yaml:
