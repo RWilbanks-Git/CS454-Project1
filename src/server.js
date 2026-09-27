@@ -172,7 +172,6 @@ app.get('/stats', (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Start of "Health" Draft (Might be changed or possibly cleaned up later):
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok'
