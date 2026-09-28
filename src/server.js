@@ -1,7 +1,5 @@
 const express = require('express');
-
-const {createClient} = require('redis');    //Proofread/check on later 
-
+const {createClient} = require('redis'); 
 const app = express();
 
 // Runtime configuration comes from the environment, never from hard-coded values.
@@ -15,16 +13,14 @@ const serviceName = process.env.SERVICE_NAME || 'cs454-project1';
 const redisHost = process.env.REDIS_HOST || 'localhost';
 const redisPort = Number(process.env.REDIS_PORT || 6379);
 
-
-
-//////////Just added (need to check up on later to check if working right)
+/////
 const redisClient = createClient({
   socket: {
     host: redisHost,
     port: redisPort
   }
 });
-///// End of addition to check on/proofread later
+/////
 
 redisClient.on('error', (redisError) => {
   console.error('Redis error:', redisError);
@@ -32,7 +28,7 @@ redisClient.on('error', (redisError) => {
 
 redisClient.connect()
 .then(() => {
-  console.log('Connected to Redis at ${redisHost}:${redisPort}');
+  console.log(`Connected to Redis at ${redisHost}:${redisPort}`);
 })
 .catch((redisError) => {
   console.error('Connection failed (Redis): ', redisError);
@@ -60,8 +56,6 @@ app.get('/', (req, res) => {
     message: 'CS 454/554 Project 1 starter is running.'
   });
 });
-
-
 
 
 // TODO (Project 1): implement GET /convert?lbs=<number>
@@ -100,7 +94,7 @@ app.get('/convert', (req, res) => {
         
       else {
         //Actual conversion
-        kg = Number((lbs * 0.45359237).toFixed(3));
+        const kg = Number((lbs * 0.45359237).toFixed(3));
 
         redisClient.incr('conversions')
         .then(() => {
@@ -136,7 +130,7 @@ app.get('/convert', (req, res) => {
 app.get('/stats', (req, res) => {
   // Finally counting and/or reading it
 
-  redisClient.get('conversion')
+  redisClient.get('conversions')
   .then((conversionCount) => {
 
     const conversions = Number(conversionCount || 0);
@@ -215,7 +209,7 @@ const shutdown = (signal) => {
     console.error(
       'Not able to close connection', 
       redisError
-    };
+    );
     process.exit(1);  //Error close
   });
 });
@@ -223,7 +217,3 @@ const shutdown = (signal) => {
 
 process.on('SIGINT', () => shutdown('SIGINT'));
 process.on('SIGTERM', () => shutdown('SIGTERM'));
-
-
-
-
