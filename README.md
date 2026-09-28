@@ -33,14 +33,20 @@ To view logs, we can use the code seen below:
 ```powershell
 docker compose logs api
 ```
-An example of my results can be shown below. I ran some tests earlier before inserting the command mentioned above, so you can see some of my previous results!
+Example output from this command can be seen below. I ran some tests earlier before inserting the command mentioned above, so you can see some of my previous test results!
 <img width="775" height="237" alt="image" src="https://github.com/user-attachments/assets/699b518d-4e12-423d-8b15-0085e5651018" />
 
 
 
-## 4.) How to stop and clean up the application.
-## 
-
+## 4.) Testing Endpoints 
+There is a lot to go through here, so I will try to organize everything by splitting everything into 3 groups (convert, stats, and health)
+### 4.1.) Health
+First, it would be good to make sure everything is running as desired. We can use the code below to check:
+```powershell
+curl http://localhost:8080/health
+```
+You should get a response like the one below ('{"status":"ok"}') if everything is running as desired.
+<img width="823" height="142" alt="image" src="https://github.com/user-attachments/assets/84f5d290-d612-4c65-97fc-9126507abcc6" />
 
 
 ##
