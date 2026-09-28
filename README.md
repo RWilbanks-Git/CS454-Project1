@@ -1,6 +1,5 @@
-# CS454-Project1
-Project 1 of CS454 course (Intro to Cloud Computing) Meant to be a Portable-Containerized-REST-Service
-
+# CS454-Project1 Goal
+Build a small multi-container application and run it locally using Docker with Compose. Develop a REST service that converts pounds (lbs) to kilograms (kg), package it as an OCI-compatible container image, connect it to Redis for persistent state, and demonstrate that the complete application can be started stopped, inspected, and recreated reproducibly. 
 
 ## 1.) Prerequisites
 To run this properly, the user will need Docker with Docker Compose. 
