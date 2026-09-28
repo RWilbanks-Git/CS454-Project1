@@ -152,18 +152,20 @@ You can see now that our "conversions" value has reset:
 
 ## 6.) Design Decisions
 
-### 1.) How Application Locates Redis
+### 6.1.) How Application Locates Redis
+The API uses REDIS_PORT and REDIS_HOST (which are set to 6379 and redis) in order to find Redis. To be a bit more specific, the API uses redis:6379 to locate and/or connect to Redis (you can see in compose.yaml). 
 
 
-### 2.) Why Redis is Not Exposed to the Host
-
-### 3.) Why the Redis Volume is Separate From the Redis Container
-
-### 4.) 1 Benefit and 1 Limitation of this Containerized Design Compared with Installing Both Services Directly on a VM.
+### 6.2.) Why Redis is Not Exposed to the Host
+Redis is only really required internally by the API, so there is not much of a reason for it to be exposed to the host here. The API can communicate with Redis using redis:6379 over the Docker Compose network. 
 
 
+### 6.3.) Why the Redis Volume is Separate From the Redis Container
+In the compose.yaml file, Redis data is stored separately from the Redis container in a volume called "redis-data". The reason for this is because containers can be both removed and re-created, and we want our "conversions" value to remain consistent even if a container is removed. If we put it into the Redis Container instead, the value would reset back to 0 whenever the container is removed and/or re-created (ex. Using the "docker compose down" command would reset the value if it was not in a named volume, as it is intended to remove containers but usually not Volumes. But, if wanted, you can still remove the volume by using a command like "docker compose down -v"). 
 
 
+### 6.4.) 1 Benefit and 1 Limitation of this Containerized Design Compared with Installing Both Services Directly on a VM.
+- A benefit to this specific design would be how Docker Compose is able to note how everything needs to be set up on its own, while, when using a VM, you would have to install and configure tools like Node.js and Redis manually. Pretty much, it is much more convenient to run it this way in comparison to VMs.
 
-##
-## 
+- A limitation/negative of this design would be that it might make troubleshooting a bit more difficult due to the extra things that come with Docker (images, containers, compose, ports, etc.) in comparison to just whatever you manually downloaded and configured onto your VM (Node.js, Redis, etc.). 
+
