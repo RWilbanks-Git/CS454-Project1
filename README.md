@@ -133,13 +133,33 @@ curl http://localhost:8080/stats
 
 
 
+## 5.) Stopping and Cleaning Up the Application
+If you would just like to stop the current container, but not remove it, you can use the following:
+```powershell
+docker compose stop
+```
+You can see an example of results below:
+<img width="1743" height="566" alt="image" src="https://github.com/user-attachments/assets/b3cb73df-d464-4c46-be0d-ccf3059fa641" />
+
+If you want to remove literally everything, including the "containers" value, you can use the following:
+```powershell
+docker compose down -v
+```
+You can see now that our "conversions" value has reset: 
+<img width="822" height="171" alt="image" src="https://github.com/user-attachments/assets/ef2cab42-3fed-4f4a-a5b8-62666cc9333c" />
 
 
 
+## 6.) Design Decisions
+
+### 1.) How Application Locates Redis
 
 
+### 2.) Why Redis is Not Exposed to the Host
 
+### 3.) Why the Redis Volume is Separate From the Redis Container
 
+### 4.) 1 Benefit and 1 Limitation of this Containerized Design Compared with Installing Both Services Directly on a VM.
 
 
 
